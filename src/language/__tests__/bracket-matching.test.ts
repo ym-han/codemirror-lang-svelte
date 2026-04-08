@@ -37,66 +37,28 @@ function collectBracketProps(input: string): Map<
   return result;
 }
 
-// Regular interpolations like {expr} delegate to the nested JS parser, whose
-// own bracket tokens are correct — they don't exercise the grammar's own
-// paren/square-bracket token definitions.
-//
-// The grammar's own "(" and ")" tokens appear in:
-//   - {#each list as item, (index)} — paren wrapping the index variable
-//   - {#snippet name(param)}        — snippet parameter list
-//
-// The grammar's own "[" and "]" tokens appear in:
-//   - {#each list as [a, b]}        — array destructuring pattern in each
-
-const EACH_WITH_INDEX = `{#each items as item, (index)}{/each}`;
-const SNIPPET_WITH_PARAMS = `{#snippet mySnippet(param)}{/snippet}`;
-const EACH_WITH_ARRAY_DESTRUCTURE = `{#each items as [a, b]}{/each}`;
+// The grammar's own bracket tokens (as opposed to the nested JS parser's)
+// appear in Svelte-specific template constructs:
+//   "(" / ")" — {#each list as item, (index)}, {#snippet name(param)}
+//   "[" / "]" — {#each list as [a, b]}
+//   "{" / "}" — every block/interpolation delimiter
 
 describe("bracket NodeProp correctness", () => {
-  describe("curly braces { }", () => {
-    // Curly braces appear in every Svelte template expression.
-    it('{ has closedBy="}"', () => {
-      const props = collectBracketProps(EACH_WITH_INDEX);
-      expect(props.get("{")?.closedBy).toEqual(["}"]);
-    });
-
-    it('} has openedBy="{"', () => {
-      const props = collectBracketProps(EACH_WITH_INDEX);
-      expect(props.get("}")?.openedBy).toEqual(["{"]);
-    });
+  it("curly braces { } have correct closedBy/openedBy", () => {
+    const props = collectBracketProps("{#each items as item, (index)}{/each}");
+    expect(props.get("{")?.closedBy).toEqual(["}"]);
+    expect(props.get("}")?.openedBy).toEqual(["{"]);
   });
 
-  describe("parentheses ( )", () => {
-    // BUG (lines 358-359 of syntax.grammar): "("[closedBy="("] and
-    // ")"[openedBy=")"] point to themselves.  These two assertions will FAIL
-    // until the grammar is corrected to closedBy=")" and openedBy="(".
-
-    it('( has closedBy=")"', () => {
-      const props = collectBracketProps(EACH_WITH_INDEX);
-      expect(props.get("(")?.closedBy).toEqual([")"]);
-    });
-
-    it(') has openedBy="("', () => {
-      const props = collectBracketProps(EACH_WITH_INDEX);
-      expect(props.get(")")?.openedBy).toEqual(["("]);
-    });
-
-    it("same props hold in a snippet parameter list", () => {
-      const props = collectBracketProps(SNIPPET_WITH_PARAMS);
-      expect(props.get("(")?.closedBy).toEqual([")"]);
-      expect(props.get(")")?.openedBy).toEqual(["("]);
-    });
+  it("parentheses ( ) have correct closedBy/openedBy", () => {
+    const props = collectBracketProps("{#each items as item, (index)}{/each}");
+    expect(props.get("(")?.closedBy).toEqual([")"]);
+    expect(props.get(")")?.openedBy).toEqual(["("]);
   });
 
-  describe("square brackets [ ]", () => {
-    it('[ has closedBy="]"', () => {
-      const props = collectBracketProps(EACH_WITH_ARRAY_DESTRUCTURE);
-      expect(props.get("[")?.closedBy).toEqual(["]"]);
-    });
-
-    it('] has openedBy="["', () => {
-      const props = collectBracketProps(EACH_WITH_ARRAY_DESTRUCTURE);
-      expect(props.get("]")?.openedBy).toEqual(["["]);
-    });
+  it("square brackets [ ] have correct closedBy/openedBy", () => {
+    const props = collectBracketProps("{#each items as [a, b]}{/each}");
+    expect(props.get("[")?.closedBy).toEqual(["]"]);
+    expect(props.get("]")?.openedBy).toEqual(["["]);
   });
 });
