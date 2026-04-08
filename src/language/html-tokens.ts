@@ -157,24 +157,22 @@ function tagNameAfter(input: InputStream, offset: number) {
     return /^[A-Z]/.test(name) ? name : name.toLowerCase();
   }
 
-  return next === QUESTION_MARK_CHAR || next === BANK_CHAR ? undefined : null;
+  return next === QUESTION_MARK_CHAR || next === BANG_CHAR ? undefined : null;
 }
 
 const LESS_THAN_CHAR = 60;
 const GREATER_THAN_CHAR = 62;
 const SLASH_CHAR = 47;
 const QUESTION_MARK_CHAR = 63;
-const BANK_CHAR = 33;
+const BANG_CHAR = 33;
 
 class ElementContext {
   public name: string;
   public parent: ElementContext | null;
-  public hash: number;
 
   constructor(name: string, parent: ElementContext | null) {
     this.name = name;
     this.parent = parent;
-    this.hash = parent ? parent.hash : 0;
   }
 }
 
@@ -203,9 +201,6 @@ export const elementContext = new ContextTracker<ElementContext | null>({
     return type === StartTag || type === OpenTag
       ? new ElementContext(tagNameAfter(input, 1) ?? '', context)
       : context;
-  },
-  hash(context) {
-    return context ? context.hash : 0;
   },
   strict: false,
 });
