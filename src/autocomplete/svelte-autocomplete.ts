@@ -354,19 +354,18 @@ function completionForAttributeValues(
   attributeValuesMap: Map<string, Completion[]>,
   attribute: string
 ) {
-  const options = structuredClone(attributeValuesMap.get(attribute));
+  const sourceOptions = attributeValuesMap.get(attribute);
 
-  if (!options) {
+  if (!sourceOptions) {
     return null;
   }
 
   const { from, name } = node;
+  const needsQuotes = name === 'UnquotedAttributeValue' || name === 'Is';
 
-  if (name === 'UnquotedAttributeValue' || name === 'Is') {
-    options.map((option) => {
-      option.apply = `"${option.label}"`;
-    });
-  }
+  const options = needsQuotes
+    ? sourceOptions.map((option) => ({ ...option, apply: `"${option.label}"` }))
+    : sourceOptions;
 
   return {
     from: name === 'Is' ? from + 1 : from,
@@ -432,7 +431,6 @@ function tryCompleteSvelteTagAttributeValues(
   }
 
   const svelteElementNameNode = current?.getChild('SvelteElementName');
-  console.log('Svelte Element Type Node:', svelteElementNameNode);
 
   if (!svelteElementNameNode) {
     return null;
