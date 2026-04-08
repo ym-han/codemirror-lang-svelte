@@ -4,6 +4,8 @@ This is a CodeMirror 6 extension that adds support for Svelte.
 
 > [!NOTE] This is a fork of [Kynson/codemirror-lang-svelte](https://github.com/Kynson/codemirror-lang-svelte), itself a fork of the MIT licensed [@replit/codemirror-lang-svelte](https://github.com/replit/codemirror-lang-svelte/tree/main).
 
+> [!CAUTION] ym-han, 2026-04-08: The improvements/changes relative to the upstream fork were mostly vibed; I haven't inspected them super closely.
+
 ## Features
 - Svelte 5 template syntax (Attachment, Snippet, Render, `{@const}`, `{@html}`, `{@debug}`)
 - Autocomplete for all Svelte 5 runes (`$state`, `$derived`, `$effect`, `$props`, `$bindable`, `$inspect`, `$host`, and sub-APIs like `$state.raw`, `$state.eager`, `$effect.pending`, etc.)
