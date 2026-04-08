@@ -71,5 +71,8 @@
     "codemirror",
     "editor",
     "code"
-  ]
+  ],
+  "dependencies": {
+    "ts-pattern": "^5.9.0"
+  }
 }

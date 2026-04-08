@@ -1,6 +1,7 @@
 import { syntaxTree } from "@codemirror/language";
 import { snippetCompletion } from "@codemirror/autocomplete";
 import { htmlCompletionSource } from "@codemirror/lang-html";
+import { match } from "ts-pattern";
 
 import {
   tagSpecificAttributes,
@@ -61,8 +62,8 @@ function completionForBlock(context: CompletionContext, node: SyntaxNode) {
     to,
   };
 
-  switch (prefix) {
-    case "/": {
+  return match(prefix)
+    .with("/", () => {
       const completion = (label: string) => ({
         ...completionBase,
         options: [{ label, type }],
@@ -72,21 +73,18 @@ function completionForBlock(context: CompletionContext, node: SyntaxNode) {
       if (parent?.name === "EachBlockClose" || block?.name === "EachBlock") {
         return completion("/each");
       }
-
       if (parent?.name === "IfBlockClose" || block?.name === "IfBlock") {
         return completion("/if");
       }
       if (parent?.name === "AwaitBlockClose" || block?.name === "AwaitBlock") {
         return completion("/await");
       }
-
       if (parent?.name === "KeyBlockClose" || block?.name === "KeyBlock") {
         return completion("/key");
       }
-
-      break;
-    }
-    case ":": {
+      return null;
+    })
+    .with(":", () => {
       const completion = (options: Completion[]) => ({
         ...completionBase,
         options,
@@ -99,20 +97,21 @@ function completionForBlock(context: CompletionContext, node: SyntaxNode) {
           { label: ":else if ", type },
         ]);
       }
-
       if (parent?.name === "ThenBlock" || block?.name === "AwaitBlock") {
         return completion([
           { label: ":then", type },
           { label: ":catch", type },
         ]);
       }
-
-      break;
-    }
-    case "#": {
-      return { from, to, options: blockSnippets, validFor: /^#(\w)*$/ };
-    }
-    case "@": {
+      return null;
+    })
+    .with("#", () => ({
+      from,
+      to,
+      options: blockSnippets,
+      validFor: /^#(\w)*$/,
+    }))
+    .with("@", () => {
       const grandParentName = node.parent?.parent?.name;
       const isInsideTag = grandParentName === "SelfClosingTag" || grandParentName === "OpenTag";
 
@@ -121,10 +120,8 @@ function completionForBlock(context: CompletionContext, node: SyntaxNode) {
         options: isInsideTag ? attributeLikeSpecialTagSnippets : specialTagSnippets,
         validFor: /^@(\w)*$/,
       };
-    }
-  }
-
-  return null;
+    })
+    .otherwise(() => null);
 }
 
 function snippetForAttribute(attributes: AttributeInfo[]) {

@@ -1,4 +1,5 @@
 import { ExternalTokenizer, InputStream } from "@lezer/lr";
+import { match } from "ts-pattern";
 import {
   LongExpression as longExprToken,
   AsTerminatedLongExpression as asTerminatedLongExprToken,
@@ -171,8 +172,8 @@ function createLongExpressionHandler(terminateOnAs = false) {
 
     const stack: ("(" | "{" | "[")[] = [];
 
-    const popIfMatch = (match: "(" | "{" | "[") => {
-      const idx = stack.lastIndexOf(match);
+    const popIfMatch = (bracket: "(" | "{" | "[") => {
+      const idx = stack.lastIndexOf(bracket);
       if (idx !== -1) {
         while (stack.length > idx) {
           stack.pop();
@@ -206,26 +207,14 @@ function createLongExpressionHandler(terminateOnAs = false) {
         break;
       }
 
-      switch (input.next) {
-        case PAREN_OPEN_CHAR:
-          stack.push("(");
-          break;
-        case PAREN_CLOSE_CHAR:
-          popIfMatch("(");
-          break;
-        case SQUARE_OPEN_CHAR:
-          stack.push("[");
-          break;
-        case SQUARE_CLOSE_CHAR:
-          popIfMatch("[");
-          break;
-        case CURLY_OPEN_CHAR:
-          stack.push("{");
-          break;
-        case CURLY_CLOSE_CHAR:
-          popIfMatch("{");
-          break;
-      }
+      match(input.next)
+        .with(PAREN_OPEN_CHAR, () => stack.push("("))
+        .with(PAREN_CLOSE_CHAR, () => popIfMatch("("))
+        .with(SQUARE_OPEN_CHAR, () => stack.push("["))
+        .with(SQUARE_CLOSE_CHAR, () => popIfMatch("["))
+        .with(CURLY_OPEN_CHAR, () => stack.push("{"))
+        .with(CURLY_CLOSE_CHAR, () => popIfMatch("{"))
+        .otherwise(() => {});
 
       input.advance();
     }
@@ -249,8 +238,8 @@ export const shortExpression = new ExternalTokenizer((input) => {
 
   const stack: ("(" | "{" | "[")[] = [];
 
-  const popIfMatch = (match: "(" | "{" | "[") => {
-    const idx = stack.lastIndexOf(match);
+  const popIfMatch = (bracket: "(" | "{" | "[") => {
+    const idx = stack.lastIndexOf(bracket);
     if (idx !== -1) {
       while (stack.length > idx) {
         stack.pop();
