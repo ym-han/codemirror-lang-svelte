@@ -10,6 +10,15 @@ This is a CodeMirror 6 extension that adds support for Svelte.
 - Autocomplete for Svelte block syntax, directives, and `svelte:` special elements
 - SvelteKit-specific `data-sveltekit-*` attribute completions
 
+## Changes from upstream (2026-04-08)
+
+- **Bug fix**: Bracket matching for parentheses in template expressions (e.g. `{#each}` index, `{#snippet}` params)
+- **Bug fix**: Removed broken `ElementContext.hash` that defeated Lezer's parser caching
+- **Bug fix**: Removed stray `console.log` in autocomplete
+- **New runes**: Added `$state.eager` and `$effect.pending` autocomplete
+- **Code quality**: Replaced `structuredClone` + mutating `.map()` with cleaner patterns; fixed variable shadowing; switched lookups from Array to Set
+- **Tooling**: Replaced `@kynsonszetau/lint` + eslint with oxlint; updated tsconfig for TS6 compat; added vitest with bracket-matching tests
+
 ## Installation
 
 Install from this fork's GitHub repository:
