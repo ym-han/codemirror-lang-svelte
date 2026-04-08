@@ -355,8 +355,8 @@ Attachment {
 @tokens {
   "{"[closedBy="}"]
   "}"[openedBy="{"]
-  "("[closedBy="("]
-  ")"[openedBy=")"]
+  "("[closedBy=")"]
+  ")"[openedBy="("]
   "["[closedBy="]"]
   "]"[openedBy="["]
   

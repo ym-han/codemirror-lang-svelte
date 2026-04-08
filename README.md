@@ -2,11 +2,61 @@
 
 This is a CodeMirror 6 extension that adds support for Svelte.
 
-> [!NOTE] This is a fork of the MIT licensed [@replit/codemirror-lang-svelte](https://github.com/replit/codemirror-lang-svelte/tree/main).
+> [!NOTE] This is a fork of [Kynson/codemirror-lang-svelte](https://github.com/Kynson/codemirror-lang-svelte), itself a fork of the MIT licensed [@replit/codemirror-lang-svelte](https://github.com/replit/codemirror-lang-svelte/tree/main).
 
-## Major Difference
-- Support for new Svelte 5 template syntax (Attachement, Snippet, Render, in template await)
-- Autocomplte for runes
+> [!CAUTION] ym-han, 2026-04-08: The improvements/changes relative to the upstream fork were mostly vibed; I haven't inspected them super closely.
+
+## Features
+- Svelte 5 template syntax (Attachment, Snippet, Render, `{@const}`, `{@html}`, `{@debug}`)
+- Autocomplete for all Svelte 5 runes (`$state`, `$derived`, `$effect`, `$props`, `$bindable`, `$inspect`, `$host`, and sub-APIs like `$state.raw`, `$state.eager`, `$effect.pending`, etc.)
+- Autocomplete for Svelte block syntax, directives, and `svelte:` special elements
+- SvelteKit-specific `data-sveltekit-*` attribute completions
+
+## Changes from upstream (2026-04-08)
+
+- **Bug fix**: Bracket matching for parentheses in template expressions (e.g. `{#each}` index, `{#snippet}` params)
+- **Bug fix**: Removed broken `ElementContext.hash` that defeated Lezer's parser caching
+- **Bug fix**: Removed stray `console.log` in autocomplete
+- **New runes**: Added `$state.eager` and `$effect.pending` autocomplete
+- **Code quality**: Replaced `structuredClone` + mutating `.map()` with cleaner patterns; fixed variable shadowing; switched lookups from Array to Set
+- **Tooling**: Replaced `@kynsonszetau/lint` + eslint with oxlint; updated tsconfig for TS6 compat; added vitest with bracket-matching tests
+
+## Installation
+
+Install from this fork's GitHub repository:
+
+```bash
+# npm
+npm install github:ym-han/codemirror-lang-svelte
+
+# pnpm
+pnpm add github:ym-han/codemirror-lang-svelte
+
+# yarn
+yarn add github:ym-han/codemirror-lang-svelte#fixes
+
+# bun
+bun add github:ym-han/codemirror-lang-svelte
+```
+
+Or add it directly to `package.json`:
+
+```json
+{
+  "dependencies": {
+    "codemirror-lang-svelte": "github:ym-han/codemirror-lang-svelte"
+  }
+}
+```
+
+The package builds automatically on install via the `prepare` script.
+
+### Peer Dependencies
+
+This package requires the following peer dependencies (you likely already have these if you use CodeMirror 6):
+
+- `@codemirror/autocomplete`, `@codemirror/lang-css`, `@codemirror/lang-html`, `@codemirror/lang-javascript`, `@codemirror/language`, `@codemirror/state`, `@codemirror/view`
+- `@lezer/common`, `@lezer/highlight`, `@lezer/lr`
 
 _As some parts are partially rewritten, the behaviour is slightly different from `@replit/codemirror-lang-svelte`. This version tends to be stricter towards grammar than the original one._
 

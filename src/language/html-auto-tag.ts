@@ -1,41 +1,28 @@
 // unfortunately the HTML language explicitly checks for the language type,
 // so we have to duplicate the entire autoCloseTags extension
 
-import { syntaxTree } from '@codemirror/language';
-import { EditorSelection } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import { syntaxTree } from "@codemirror/language";
+import { EditorSelection } from "@codemirror/state";
+import { EditorView } from "@codemirror/view";
 
-import type { SyntaxNode } from '@lezer/common';
-import type { Text } from '@codemirror/state';
+import type { SyntaxNode } from "@lezer/common";
+import type { Text } from "@codemirror/state";
 
-function getElementName(
-  doc: Text,
-  tree: SyntaxNode | null | undefined,
-  max = doc.length
-) {
+function getElementName(doc: Text, tree: SyntaxNode | null | undefined, max = doc.length) {
   if (!tree) {
-    return '';
+    return "";
   }
 
   const tag = tree.firstChild;
   const nameNode =
     tag &&
-    (tag.getChild('TagName') ??
-      tag.getChild('ComponentName') ??
-      tag.getChild('SvelteElementName'));
+    (tag.getChild("TagName") ?? tag.getChild("ComponentName") ?? tag.getChild("SvelteElementName"));
 
-  return nameNode
-    ? doc.sliceString(nameNode.from, Math.min(nameNode.to, max))
-    : '';
+  return nameNode ? doc.sliceString(nameNode.from, Math.min(nameNode.to, max)) : "";
 }
 
 export const autoCloseTags = EditorView.inputHandler.of((view, from, to, text) => {
-  if (
-    view.composing ||
-    view.state.readOnly ||
-    from !== to ||
-    (text !== '>' && text !== '/')
-  ) {
+  if (view.composing || view.state.readOnly || from !== to || (text !== ">" && text !== "/")) {
     return false;
   }
 
@@ -46,7 +33,7 @@ export const autoCloseTags = EditorView.inputHandler.of((view, from, to, text) =
     let name: string;
 
     // Tree structure: Element -> OpenTag -> ...
-    while (around && around.name !== 'OpenTag') {
+    while (around && around.name !== "OpenTag") {
       around = around.parent;
     }
 
@@ -58,13 +45,13 @@ export const autoCloseTags = EditorView.inputHandler.of((view, from, to, text) =
     const nextChar = state.doc.sliceString(head, head + 1);
 
     if (
-      text === '>' &&
+      text === ">" &&
       // Ensure there is no closing tag already
-      (around.parent?.lastChild?.name !== 'CloseTag' || nextChar !== '<') &&
+      (around.parent?.lastChild?.name !== "CloseTag" || nextChar !== "<") &&
       name
     ) {
-      const hasRightBracket = nextChar === '>';
-      const insert = `${hasRightBracket ? '' : '>'}</${name}>`;
+      const hasRightBracket = nextChar === ">";
+      const insert = `${hasRightBracket ? "" : ">"}</${name}>`;
       return {
         range: EditorSelection.cursor(head + 1),
         changes: { from: head + (hasRightBracket ? 1 : 0), insert },
@@ -75,15 +62,9 @@ export const autoCloseTags = EditorView.inputHandler.of((view, from, to, text) =
     const base = empty?.parent;
     name = getElementName(state.doc, base, head);
 
-    if (
-      text === '/' &&
-      empty?.from === head - 1 &&
-      base?.lastChild?.name !== 'CloseTag' &&
-      name
-    ) {
-      const hasRightBracket =
-        view.state.doc.sliceString(head, head + 1) === '>';
-      const insert = `/${name}${hasRightBracket ? '' : '>'}`;
+    if (text === "/" && empty?.from === head - 1 && base?.lastChild?.name !== "CloseTag" && name) {
+      const hasRightBracket = view.state.doc.sliceString(head, head + 1) === ">";
+      const insert = `/${name}${hasRightBracket ? "" : ">"}`;
       const pos = head + insert.length + (hasRightBracket ? 1 : 0);
 
       return {
@@ -99,7 +80,7 @@ export const autoCloseTags = EditorView.inputHandler.of((view, from, to, text) =
     return false;
   }
 
-  view.dispatch(changes, { userEvent: 'input.type', scrollIntoView: true });
+  view.dispatch(changes, { userEvent: "input.type", scrollIntoView: true });
 
   return true;
 });
