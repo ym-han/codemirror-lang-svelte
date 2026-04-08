@@ -8,7 +8,6 @@ import {
   completionForJavascript,
   svelteHtmlCompletionSource,
 } from "./autocomplete/svelte-autocomplete";
-import { theme } from "./autocomplete/theme";
 
 import type { Config } from "./language/svelte-language";
 
@@ -29,6 +28,5 @@ export function svelte(config: Config = {}) {
     svelteLanguageInstance.data.of({
       autocomplete: svelteHtmlCompletionSource,
     }),
-    theme,
   ]);
 }
