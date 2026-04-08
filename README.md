@@ -25,16 +25,16 @@ Install from this fork's GitHub repository:
 
 ```bash
 # npm
-npm install github:ym-han/codemirror-lang-svelte#fixes
+npm install github:ym-han/codemirror-lang-svelte
 
 # pnpm
-pnpm add github:ym-han/codemirror-lang-svelte#fixes
+pnpm add github:ym-han/codemirror-lang-svelte
 
 # yarn
-yarn add ym-han/codemirror-lang-svelte#fixes
+yarn add github:ym-han/codemirror-lang-svelte#fixes
 
 # bun
-bun add github:ym-han/codemirror-lang-svelte#fixes
+bun add github:ym-han/codemirror-lang-svelte
 ```
 
 Or add it directly to `package.json`:
@@ -42,7 +42,7 @@ Or add it directly to `package.json`:
 ```json
 {
   "dependencies": {
-    "codemirror-lang-svelte": "github:ym-han/codemirror-lang-svelte#fixes"
+    "codemirror-lang-svelte": "github:ym-han/codemirror-lang-svelte"
   }
 }
 ```
