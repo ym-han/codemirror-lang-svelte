@@ -1,4 +1,4 @@
-import { ExternalTokenizer, ContextTracker } from '@lezer/lr';
+import { ExternalTokenizer, ContextTracker } from "@lezer/lr";
 import {
   StartTag,
   StartCloseTag,
@@ -17,102 +17,102 @@ import {
   StartTextareaTag,
   textareaText,
   StartCloseTextareaTag,
-} from './syntax.grammar?terms';
+} from "./syntax.grammar?terms";
 
-import type { InputStream } from '@lezer/lr';
+import type { InputStream } from "@lezer/lr";
 
 const selfClosers = new Set([
-  'area',
-  'base',
-  'br',
-  'col',
-  'command',
-  'embed',
-  'frame',
-  'hr',
-  'img',
-  'input',
-  'keygen',
-  'link',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr',
-  'menuitem',
+  "area",
+  "base",
+  "br",
+  "col",
+  "command",
+  "embed",
+  "frame",
+  "hr",
+  "img",
+  "input",
+  "keygen",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
+  "menuitem",
   // SVG self-closing tags
-  'circle',
-  'ellipse',
-  'line',
-  'path',
-  'polygon',
-  'polyline',
-  'rect',
-  'stop',
-  'use',
+  "circle",
+  "ellipse",
+  "line",
+  "path",
+  "polygon",
+  "polyline",
+  "rect",
+  "stop",
+  "use",
 ]);
 
 const implicitlyClosed = new Set([
-  'dd',
-  'li',
-  'optgroup',
-  'option',
-  'p',
-  'rp',
-  'rt',
-  'tbody',
-  'td',
-  'tfoot',
-  'th',
-  'tr',
+  "dd",
+  "li",
+  "optgroup",
+  "option",
+  "p",
+  "rp",
+  "rt",
+  "tbody",
+  "td",
+  "tfoot",
+  "th",
+  "tr",
 ]);
 
 const closeOnOpen = new Map([
-  ['dd', new Set(['dd', 'dt'])],
-  ['dt', new Set(['dd', 'dt'])],
-  ['li', new Set(['li'])],
-  ['option', new Set(['option', 'optgroup'])],
-  ['optgroup', new Set(['optgroup'])],
+  ["dd", new Set(["dd", "dt"])],
+  ["dt", new Set(["dd", "dt"])],
+  ["li", new Set(["li"])],
+  ["option", new Set(["option", "optgroup"])],
+  ["optgroup", new Set(["optgroup"])],
   [
-    'p',
+    "p",
     new Set([
-      'address',
-      'article',
-      'aside',
-      'blockquote',
-      'dir',
-      'div',
-      'dl',
-      'fieldset',
-      'footer',
-      'form',
-      'h1',
-      'h2',
-      'h3',
-      'h4',
-      'h5',
-      'h6',
-      'header',
-      'hgroup',
-      'hr',
-      'menu',
-      'nav',
-      'ol',
-      'p',
-      'pre',
-      'section',
-      'table',
-      'ul',
+      "address",
+      "article",
+      "aside",
+      "blockquote",
+      "dir",
+      "div",
+      "dl",
+      "fieldset",
+      "footer",
+      "form",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "header",
+      "hgroup",
+      "hr",
+      "menu",
+      "nav",
+      "ol",
+      "p",
+      "pre",
+      "section",
+      "table",
+      "ul",
     ]),
   ],
-  ['rp', new Set(['rp', 'rt'])],
-  ['rt', new Set(['rp', 'rt'])],
-  ['tbody', new Set(['tbody', 'tfoot'])],
-  ['td', new Set(['td', 'th'])],
-  ['tfoot', new Set(['tbody'])],
-  ['th', new Set(['td', 'th'])],
-  ['thead', new Set(['tbody', 'tfoot'])],
-  ['tr', new Set(['tr'])],
+  ["rp", new Set(["rp", "rt"])],
+  ["rt", new Set(["rp", "rt"])],
+  ["tbody", new Set(["tbody", "tfoot"])],
+  ["td", new Set(["td", "th"])],
+  ["tfoot", new Set(["tbody"])],
+  ["th", new Set(["td", "th"])],
+  ["thead", new Set(["tbody", "tfoot"])],
+  ["tr", new Set(["tr"])],
 ]);
 
 function nameChar(ch: number) {
@@ -141,7 +141,7 @@ function tagNameAfter(input: InputStream, offset: number) {
   }
   let next = input.peek(offset);
   while (isSpace(next)) next = input.peek(++offset);
-  let name = '';
+  let name = "";
   for (;;) {
     if (!nameChar(next)) break;
     name += String.fromCharCode(next);
@@ -188,18 +188,16 @@ export const elementContext = new ContextTracker<ElementContext | null>({
   start: null,
   shift(context, term, _stack, input) {
     return startTagTerms.has(term)
-      ? new ElementContext(tagNameAfter(input, 1) ?? '', context)
+      ? new ElementContext(tagNameAfter(input, 1) ?? "", context)
       : context;
   },
   reduce(context, term) {
-    return term === Element && context
-      ? context.parent ?? new ElementContext('', null)
-      : context;
+    return term === Element && context ? (context.parent ?? new ElementContext("", null)) : context;
   },
   reuse(context, node, _stack, input) {
     const type = node.type.id;
     return type === StartTag || type === OpenTag
-      ? new ElementContext(tagNameAfter(input, 1) ?? '', context)
+      ? new ElementContext(tagNameAfter(input, 1) ?? "", context)
       : context;
   },
   strict: false,
@@ -237,9 +235,7 @@ export const tagStart = new ExternalTokenizer(
       return;
     }
 
-    const parent = stack.context
-      ? (stack.context as ElementContext).name
-      : null;
+    const parent = stack.context ? (stack.context as ElementContext).name : null;
 
     if (isClosed) {
       if (name === parent) {
@@ -268,17 +264,17 @@ export const tagStart = new ExternalTokenizer(
       return;
     }
 
-    if (name === 'script') {
+    if (name === "script") {
       input.acceptToken(StartScriptTag);
 
       return;
     }
-    if (name === 'style') {
+    if (name === "style") {
       input.acceptToken(StartStyleTag);
 
       return;
     }
-    if (name === 'textarea') {
+    if (name === "textarea") {
       input.acceptToken(StartTextareaTag);
 
       return;
@@ -294,7 +290,7 @@ export const tagStart = new ExternalTokenizer(
       input.acceptToken(StartTag);
     }
   },
-  { contextual: true }
+  { contextual: true },
 );
 
 function contentTokenizer(tag: string, textToken: number, endToken: number) {
@@ -314,9 +310,7 @@ function contentTokenizer(tag: string, textToken: number, endToken: number) {
       if (
         (state === 0 && input.next === LESS_THAN_CHAR) ||
         (state === 1 && input.next === SLASH_CHAR) ||
-        (state >= 2 &&
-          state < lastState &&
-          input.next === tag.charCodeAt(state - 2))
+        (state >= 2 && state < lastState && input.next === tag.charCodeAt(state - 2))
       ) {
         state++;
         matchedLen++;
@@ -329,10 +323,7 @@ function contentTokenizer(tag: string, textToken: number, endToken: number) {
           input.acceptToken(endToken, -(matchedLen - 2));
         }
         break;
-      } else if (
-        (input.next == 10 /* '\n' */ || input.next == 13) /* '\r' */ &&
-        i
-      ) {
+      } else if ((input.next == 10 /* '\n' */ || input.next == 13) /* '\r' */ && i) {
         input.acceptToken(textToken, 1);
         break;
       } else {
@@ -343,20 +334,8 @@ function contentTokenizer(tag: string, textToken: number, endToken: number) {
   });
 }
 
-export const scriptTokens = contentTokenizer(
-  'script',
-  scriptText,
-  StartCloseScriptTag
-);
+export const scriptTokens = contentTokenizer("script", scriptText, StartCloseScriptTag);
 
-export const styleTokens = contentTokenizer(
-  'style',
-  styleText,
-  StartCloseStyleTag
-);
+export const styleTokens = contentTokenizer("style", styleText, StartCloseStyleTag);
 
-export const textareaTokens = contentTokenizer(
-  'textarea',
-  textareaText,
-  StartCloseTextareaTag
-);
+export const textareaTokens = contentTokenizer("textarea", textareaText, StartCloseTextareaTag);

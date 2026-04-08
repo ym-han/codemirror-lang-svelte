@@ -1,16 +1,13 @@
-import { LRLanguage, foldNodeProp } from '@codemirror/language';
-import { parser as svelteParser } from './syntax.grammar';
-import { configureNesting } from './content';
-import { cssLanguage } from '@codemirror/lang-css';
-import {
-  javascriptLanguage,
-  typescriptLanguage,
-} from '@codemirror/lang-javascript';
-import { completionForMarkup } from '../autocomplete/svelte-autocomplete';
-import { indentationProp } from './indentation-prop';
+import { LRLanguage, foldNodeProp } from "@codemirror/language";
+import { parser as svelteParser } from "./syntax.grammar";
+import { configureNesting } from "./content";
+import { cssLanguage } from "@codemirror/lang-css";
+import { javascriptLanguage, typescriptLanguage } from "@codemirror/lang-javascript";
+import { completionForMarkup } from "../autocomplete/svelte-autocomplete";
+import { indentationProp } from "./indentation-prop";
 
-import type { NestedLanguageConfig } from './content';
-import type { LRParser } from '@lezer/lr';
+import type { NestedLanguageConfig } from "./content";
+import type { LRParser } from "@lezer/lr";
 
 export interface Config {
   jsParser?: LRParser;
@@ -18,37 +15,29 @@ export interface Config {
   cssParser?: LRParser;
 }
 
-function getNestingConfig({
-  jsParser,
-  tsParser,
-  cssParser,
-}: Config): NestedLanguageConfig[] {
+function getNestingConfig({ jsParser, tsParser, cssParser }: Config): NestedLanguageConfig[] {
   return [
     {
-      tag: 'script',
-      attributeMatcher: (attrs) =>
-        attrs.type === 'text/typescript' || attrs.lang === 'ts',
+      tag: "script",
+      attributeMatcher: (attrs) => attrs.type === "text/typescript" || attrs.lang === "ts",
       parser: tsParser ?? typescriptLanguage.parser,
     },
     {
-      tag: 'script',
+      tag: "script",
       attributeMatcher(attrs) {
         return (
           !attrs.type ||
-          /^(?:text|application)\/(?:x-)?(?:java|ecma)script$|^module$|^$/i.test(
-            attrs.type
-          )
+          /^(?:text|application)\/(?:x-)?(?:java|ecma)script$|^module$|^$/i.test(attrs.type)
         );
       },
       parser: jsParser ?? javascriptLanguage.parser,
     },
     {
-      tag: 'style',
+      tag: "style",
       attributeMatcher(attrs) {
         return (
-          (!attrs.lang || attrs.lang === 'css' || attrs.lang === 'scss') &&
-          (!attrs.type ||
-            /^(text\/)?(x-)?(stylesheet|css|scss)$/i.test(attrs.type))
+          (!attrs.lang || attrs.lang === "css" || attrs.lang === "scss") &&
+          (!attrs.type || /^(text\/)?(x-)?(stylesheet|css|scss)$/i.test(attrs.type))
         );
       },
       parser: cssParser ?? cssLanguage.parser,
@@ -80,12 +69,12 @@ export function svelteLanguage(config: Config) {
           Element: (node) => {
             const first = node.firstChild;
             const last = node.lastChild;
-            if (!first || !last || first.name !== 'OpenTag') {
+            if (!first || !last || first.name !== "OpenTag") {
               return null;
             }
             return {
               from: first.to,
-              to: last.name === 'CloseTag' ? last.from : node.to,
+              to: last.name === "CloseTag" ? last.from : node.to,
             };
           },
         }),
@@ -93,11 +82,11 @@ export function svelteLanguage(config: Config) {
     }),
 
     languageData: {
-      commentTokens: { block: { open: '<!--', close: '-->' } },
+      commentTokens: { block: { open: "<!--", close: "-->" } },
       indentOnInput:
         /^\s*((<\/\w+\W)|(\/?>)|(\{:(else|then|catch))|(\{\/(if|each|await|key|snippet)))$/,
-      wordChars: '-._',
+      wordChars: "-._",
       autocomplete: completionForMarkup,
     },
   });
-};
+}

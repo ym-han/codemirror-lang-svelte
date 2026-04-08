@@ -1,7 +1,7 @@
-import { EditorView } from '@codemirror/view';
+import { EditorView } from "@codemirror/view";
 
 export const theme = EditorView.theme({
-  '.cm-completionIcon-snippet': {
-    '&:after': { content: "'Σ'" },
+  ".cm-completionIcon-snippet": {
+    "&:after": { content: "'Σ'" },
   },
 });

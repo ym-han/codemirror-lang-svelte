@@ -1,14 +1,14 @@
-import { ExternalTokenizer, InputStream } from "@lezer/lr"
+import { ExternalTokenizer, InputStream } from "@lezer/lr";
 import {
   LongExpression as longExprToken,
   AsTerminatedLongExpression as asTerminatedLongExprToken,
   ShortExpression as shortExprToken,
   commentContent as cmtToken,
-} from './syntax.grammar?terms';
+} from "./syntax.grammar?terms";
 
 const SPACE_CHARS = new Set([
-  9, 10, 11, 12, 13, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196, 8197,
-  8198, 8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288,
+  9, 10, 11, 12, 13, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196, 8197, 8198, 8199, 8200, 8201,
+  8202, 8232, 8233, 8239, 8287, 12288,
 ]);
 
 const PAREN_OPEN_CHAR = 40;
@@ -55,7 +55,7 @@ export const commentContent = new ExternalTokenizer((input) => {
 
 function createStringHandler(input: InputStream) {
   let inString = false;
-  let inStringType: 'double' | 'single' | 'template' | null = null;
+  let inStringType: "double" | "single" | "template" | null = null;
   let inStringIgnoreNext = false;
 
   return () => {
@@ -70,19 +70,19 @@ function createStringHandler(input: InputStream) {
         return true;
       }
 
-      if (inStringType === 'double' && input.next === QUOTE_DOUBLE_CHAR) {
+      if (inStringType === "double" && input.next === QUOTE_DOUBLE_CHAR) {
         inString = false;
         inStringType = null;
         return true;
       }
 
-      if (inStringType === 'single' && input.next === QUOTE_SINGLE_CHAR) {
+      if (inStringType === "single" && input.next === QUOTE_SINGLE_CHAR) {
         inString = false;
         inStringType = null;
         return true;
       }
 
-      if (inStringType === 'template' && input.next === TICK_CHAR) {
+      if (inStringType === "template" && input.next === TICK_CHAR) {
         inString = false;
         inStringType = null;
         return true;
@@ -93,19 +93,19 @@ function createStringHandler(input: InputStream) {
 
     if (input.next === QUOTE_DOUBLE_CHAR) {
       inString = true;
-      inStringType = 'double';
+      inStringType = "double";
       return true;
     }
 
     if (input.next === QUOTE_SINGLE_CHAR) {
       inString = true;
-      inStringType = 'single';
+      inStringType = "single";
       return true;
     }
 
     if (input.next === TICK_CHAR) {
       inString = true;
-      inStringType = 'template';
+      inStringType = "template";
       return true;
     }
 
@@ -151,13 +151,13 @@ function createCommentHandler(input: InputStream) {
 }
 
 function isAs(input: InputStream) {
-  let token = '';
+  let token = "";
 
   for (let i = 0; i < 3; i++) {
     token += String.fromCharCode(input.peek(i));
   }
 
-  return token === ' as';
+  return token === " as";
 }
 
 function createLongExpressionHandler(terminateOnAs = false) {
@@ -169,9 +169,9 @@ function createLongExpressionHandler(terminateOnAs = false) {
     const commentHandler = createCommentHandler(input);
     const stringHandler = createStringHandler(input);
 
-    const stack: ('(' | '{' | '[')[] = [];
+    const stack: ("(" | "{" | "[")[] = [];
 
-    const popIfMatch = (match: '(' | '{' | '[') => {
+    const popIfMatch = (match: "(" | "{" | "[") => {
       const idx = stack.lastIndexOf(match);
       if (idx !== -1) {
         while (stack.length > idx) {
@@ -184,9 +184,7 @@ function createLongExpressionHandler(terminateOnAs = false) {
       // end of input
       if (input.next < 0) {
         if (pos > 0) {
-          input.acceptToken(
-            terminateOnAs ? asTerminatedLongExprToken : longExprToken
-          );
+          input.acceptToken(terminateOnAs ? asTerminatedLongExprToken : longExprToken);
         }
 
         break;
@@ -204,30 +202,28 @@ function createLongExpressionHandler(terminateOnAs = false) {
           input.next === SQUARE_CLOSE_CHAR ||
           (terminateOnAs && isAs(input)))
       ) {
-        input.acceptToken(
-          terminateOnAs ? asTerminatedLongExprToken : longExprToken
-        );
+        input.acceptToken(terminateOnAs ? asTerminatedLongExprToken : longExprToken);
         break;
       }
 
       switch (input.next) {
         case PAREN_OPEN_CHAR:
-          stack.push('(');
+          stack.push("(");
           break;
         case PAREN_CLOSE_CHAR:
-          popIfMatch('(');
+          popIfMatch("(");
           break;
         case SQUARE_OPEN_CHAR:
-          stack.push('[');
+          stack.push("[");
           break;
         case SQUARE_CLOSE_CHAR:
-          popIfMatch('[');
+          popIfMatch("[");
           break;
         case CURLY_OPEN_CHAR:
-          stack.push('{');
+          stack.push("{");
           break;
         case CURLY_CLOSE_CHAR:
-          popIfMatch('{');
+          popIfMatch("{");
           break;
       }
 
@@ -237,13 +233,9 @@ function createLongExpressionHandler(terminateOnAs = false) {
 }
 
 // Terminate on a delimiter that probably isn't in the expression
-export const longExpression = new ExternalTokenizer(
-  createLongExpressionHandler()
-);
+export const longExpression = new ExternalTokenizer(createLongExpressionHandler());
 // Terminate on " as" that is reasonably not inside of the expression
-export const asTerminatedLongExpression = new ExternalTokenizer(
-  createLongExpressionHandler(true)
-);
+export const asTerminatedLongExpression = new ExternalTokenizer(createLongExpressionHandler(true));
 
 // Same as long expression but will terminate on either a space or comma
 // that is reasonably not inside of the expression
@@ -255,9 +247,9 @@ export const shortExpression = new ExternalTokenizer((input) => {
   const commentHandler = createCommentHandler(input);
   const stringHandler = createStringHandler(input);
 
-  const stack: ('(' | '{' | '[')[] = [];
+  const stack: ("(" | "{" | "[")[] = [];
 
-  const popIfMatch = (match: '(' | '{' | '[') => {
+  const popIfMatch = (match: "(" | "{" | "[") => {
     const idx = stack.lastIndexOf(match);
     if (idx !== -1) {
       while (stack.length > idx) {
@@ -294,22 +286,22 @@ export const shortExpression = new ExternalTokenizer((input) => {
 
     switch (input.next) {
       case PAREN_OPEN_CHAR:
-        stack.push('(');
+        stack.push("(");
         break;
       case PAREN_CLOSE_CHAR:
-        popIfMatch('(');
+        popIfMatch("(");
         break;
       case SQUARE_OPEN_CHAR:
-        stack.push('[');
+        stack.push("[");
         break;
       case SQUARE_CLOSE_CHAR:
-        popIfMatch('[');
+        popIfMatch("[");
         break;
       case CURLY_OPEN_CHAR:
-        stack.push('{');
+        stack.push("{");
         break;
       case CURLY_CLOSE_CHAR:
-        popIfMatch('{');
+        popIfMatch("{");
         break;
     }
 
