@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
     "format": "prettier src/* --write --ignore-unknown",
     "generate": "lezer-generator",
     "lint": "oxlint"
@@ -59,10 +59,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kynson/codemirror-lang-svelte.git"
+    "url": "git+https://github.com/ym-han/codemirror-lang-svelte.git"
   },
   "bugs": {
-    "url": "https://github.com/Kynson/codemirror-lang-svelte/issues"
+    "url": "https://github.com/ym-han/codemirror-lang-svelte/issues"
   },
   "keywords": [
     "language",
