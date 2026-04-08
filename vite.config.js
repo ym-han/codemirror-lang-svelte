@@ -16,6 +16,8 @@ export default defineConfig({
         'src/**/*.d.ts',
       ],
       resolvers: [grammarResolver],
+      tsconfigPath: './tsconfig.build.json',
+      entryRoot: 'src',
       rollupTypes: true,
     }),
   ],

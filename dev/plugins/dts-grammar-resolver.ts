@@ -1,7 +1,7 @@
 import { relative } from 'node:path';
 import { GRAMMAR_FILE_PATTERN } from './consts';
 
-import type { PluginOptions } from 'unplugin-dts';
+import type { PluginOptions } from 'vite-plugin-dts';
 
 type Resolver = NonNullable<PluginOptions['resolvers']>[number];
 
