@@ -49,7 +49,7 @@ Or add it directly to `package.json`:
 }
 ```
 
-The package builds automatically on install via the `prepare` script.
+The `dist/` directory is committed to the repo because bun doesn't install devDependencies before running `prepare` scripts for git dependencies ([oven-sh/bun#6138](https://github.com/oven-sh/bun/issues/6138), [#10297](https://github.com/oven-sh/bun/issues/10297)). With npm/yarn/pnpm, the `prepare` script would handle this automatically.
 
 ### Peer Dependencies
 
