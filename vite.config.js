@@ -16,6 +16,7 @@ export default defineConfig({
         'src/**/*.d.ts',
       ],
       resolvers: [grammarResolver],
+      rollupTypes: true,
     }),
   ],
   server: {
