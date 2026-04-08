@@ -6,10 +6,10 @@ import {
   commentContent as cmtToken,
 } from './syntax.grammar?terms';
 
-const SPACE_CHARS = [
+const SPACE_CHARS = new Set([
   9, 10, 11, 12, 13, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196, 8197,
   8198, 8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288,
-];
+]);
 
 const PAREN_OPEN_CHAR = 40;
 const PAREN_CLOSE_CHAR = 41;
@@ -31,7 +31,7 @@ const NEWLINE_CHAR = 10;
 const ASTERISK_CHAR = 42;
 const TICK_CHAR = 96;
 
-const prefixes = [COLON_CHAR, HASH_CHAR, AT_CHAR, SLASH_CHAR];
+const prefixes = new Set([COLON_CHAR, HASH_CHAR, AT_CHAR, SLASH_CHAR]);
 
 export const commentContent = new ExternalTokenizer((input) => {
   for (let dashes = 0, i = 0; ; i++) {
@@ -162,7 +162,7 @@ function isAs(input: InputStream) {
 
 function createLongExpressionHandler(terminateOnAs = false) {
   return (input: InputStream) => {
-    if (prefixes.includes(input.next)) {
+    if (prefixes.has(input.next)) {
       return;
     }
 
@@ -248,7 +248,7 @@ export const asTerminatedLongExpression = new ExternalTokenizer(
 // Same as long expression but will terminate on either a space or comma
 // that is reasonably not inside of the expression
 export const shortExpression = new ExternalTokenizer((input) => {
-  if (prefixes.includes(input.peek(0))) {
+  if (prefixes.has(input.peek(0))) {
     return;
   }
 
@@ -313,7 +313,7 @@ export const shortExpression = new ExternalTokenizer((input) => {
         break;
     }
 
-    if (pos !== 0 && stack.length === 0 && SPACE_CHARS.includes(input.next)) {
+    if (pos !== 0 && stack.length === 0 && SPACE_CHARS.has(input.next)) {
       input.acceptToken(shortExprToken);
       break;
     }

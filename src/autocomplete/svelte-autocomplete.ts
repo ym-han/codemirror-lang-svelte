@@ -226,8 +226,8 @@ const optionsForSveltekitAttributeValues = sveltekitAttributes.reduce(
 
     map.set(
       label,
-      values.map(({ label, info, boost }) => ({
-        label,
+      values.map(({ label: valueLabel, info, boost }) => ({
+        label: valueLabel,
         info,
         boost,
         type: 'constant',
@@ -252,8 +252,8 @@ const optionsForSvelteTagAttributeValues = svelteTags.reduce(
 
       map.set(
         `${label}/${attribute.label}`,
-        attribute.values.map(({ label, info, boost }) => ({
-          label,
+        attribute.values.map(({ label: valueLabel, info, boost }) => ({
+          label: valueLabel,
           info,
           boost,
           type: 'constant',
@@ -279,8 +279,8 @@ const optionsForTagSpecificAttributeValues = tagSpecificAttributes.reduce(
 
       map.set(
         `${label}/${attribute.label}`,
-        attribute.values.map(({ label, info, boost }) => ({
-          label,
+        attribute.values.map(({ label: valueLabel, info, boost }) => ({
+          label: valueLabel,
           info,
           boost,
           type: 'constant',
