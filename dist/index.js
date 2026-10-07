@@ -8,7 +8,7 @@ import { EditorView as tt } from "@codemirror/view";
 import { parseMixed as Ot } from "@lezer/common";
 import { snippetCompletion as V } from "@codemirror/autocomplete";
 import { htmlCompletionSource as nt } from "@codemirror/lang-html";
-const at = 156, rt = 1, ot = 157, lt = 2, st = 158, it = 3, U = 4, Ve = 5, Pe = 6, Te = 7, xe = 8, pt = 9, ct = 11, I = 159, $t = 12, oe = 160, D = 13, G = 14, Y = 15, bt = 75, ht = 118, ut = 121, wt = 124, ft = 126, dt = /* @__PURE__ */ new Set([
+const at = 156, rt = 1, ot = 157, lt = 2, st = 158, it = 3, U = 4, Ve = 5, Pe = 6, Te = 7, xe = 8, pt = 9, ct = 11, I = 159, $t = 12, oe = 160, D = 13, G = 14, Y = 15, ht = 75, bt = 118, ut = 121, wt = 124, ft = 126, dt = /* @__PURE__ */ new Set([
   "area",
   "base",
   "br",
@@ -135,7 +135,7 @@ const Pt = /* @__PURE__ */ new Set([
     return Pt.has(t) ? new M(F(n, 1) ?? "", e) : e;
   },
   reduce(e, t) {
-    return t === bt && e ? e.parent ?? new M("", null) : e;
+    return t === ht && e ? e.parent ?? new M("", null) : e;
   },
   reuse(e, t, O, n) {
     const a = t.type.id;
@@ -237,7 +237,7 @@ const Qt = z("script", at, rt), yt = z("style", ot, lt), Wt = z("textarea", st, 
         if (r.length > 1) throw new Error("Pattern error: Using `...P.array(...)` several times in a single pattern is not allowed.");
         if (t.length < n.length + a.length) return !1;
         const o = t.slice(0, n.length), s = a.length === 0 ? [] : t.slice(-a.length), c = t.slice(n.length, a.length === 0 ? 1 / 0 : -a.length);
-        return n.every((p, b) => f(p, o[b], O)) && a.every((p, b) => f(p, s[b], O)) && (r.length === 0 || f(r[0], c, O));
+        return n.every((p, h) => f(p, o[h], O)) && a.every((p, h) => f(p, s[h], O)) && (r.length === 0 || f(r[0], c, O));
       }
       return e.length === t.length && e.every((o, s) => f(o, t[s], O));
     }
@@ -252,11 +252,11 @@ const Qt = z("script", at, rt), yt = z("style", ot, lt), Wt = z("textarea", st, 
   var t, O, n;
   return J(e) ? _(e) ? (t = (O = (n = e[d]()).getSelectionKeys) == null ? void 0 : O.call(n)) != null ? t : [] : Array.isArray(e) ? k(e, v) : k(Object.values(e), v) : [];
 }, k = (e, t) => e.reduce((O, n) => O.concat(t(n)), []);
-function h(e) {
+function b(e) {
   return Object.assign(e, { optional: () => At(e), and: (t) => $(e, t), or: (t) => Bt(e, t), select: (t) => t === void 0 ? pe(e) : pe(t, e) });
 }
 function At(e) {
-  return h({ [d]: () => ({ match: (t) => {
+  return b({ [d]: () => ({ match: (t) => {
     let O = {};
     const n = (a, r) => {
       O[a] = r;
@@ -265,7 +265,7 @@ function At(e) {
   }, getSelectionKeys: () => v(e), matcherType: "optional" }) });
 }
 function $(...e) {
-  return h({ [d]: () => ({ match: (t) => {
+  return b({ [d]: () => ({ match: (t) => {
     let O = {};
     const n = (a, r) => {
       O[a] = r;
@@ -274,7 +274,7 @@ function $(...e) {
   }, getSelectionKeys: () => k(e, v), matcherType: "and" }) });
 }
 function Bt(...e) {
-  return h({ [d]: () => ({ match: (t) => {
+  return b({ [d]: () => ({ match: (t) => {
     let O = {};
     const n = (a, r) => {
       O[a] = r;
@@ -287,7 +287,7 @@ function i(e) {
 }
 function pe(...e) {
   const t = typeof e[0] == "string" ? e[0] : void 0, O = e.length === 2 ? e[1] : typeof e[0] == "string" ? void 0 : e[0];
-  return h({ [d]: () => ({ match: (n) => {
+  return b({ [d]: () => ({ match: (n) => {
     let a = { [t ?? X]: n };
     return { matched: O === void 0 || f(O, n, (r, o) => {
       a[r] = o;
@@ -306,9 +306,9 @@ function S(e) {
 function q(e) {
   return typeof e == "bigint";
 }
-h(i(ke));
-h(i(ke));
-const m = (e) => Object.assign(h(e), { startsWith: (t) => {
+b(i(ke));
+b(i(ke));
+const m = (e) => Object.assign(b(e), { startsWith: (t) => {
   return m($(e, (O = t, i((n) => S(n) && n.startsWith(O)))));
   var O;
 }, endsWith: (t) => {
@@ -322,20 +322,20 @@ const m = (e) => Object.assign(h(e), { startsWith: (t) => {
   var O;
 } });
 m(i(S));
-const w = (e) => Object.assign(h(e), { between: (t, O) => w($(e, ((n, a) => i((r) => u(r) && n <= r && a >= r))(t, O))), lt: (t) => w($(e, ((O) => i((n) => u(n) && n < O))(t))), gt: (t) => w($(e, ((O) => i((n) => u(n) && n > O))(t))), lte: (t) => w($(e, ((O) => i((n) => u(n) && n <= O))(t))), gte: (t) => w($(e, ((O) => i((n) => u(n) && n >= O))(t))), int: () => w($(e, i((t) => u(t) && Number.isInteger(t)))), finite: () => w($(e, i((t) => u(t) && Number.isFinite(t)))), positive: () => w($(e, i((t) => u(t) && t > 0))), negative: () => w($(e, i((t) => u(t) && t < 0))) });
+const w = (e) => Object.assign(b(e), { between: (t, O) => w($(e, ((n, a) => i((r) => u(r) && n <= r && a >= r))(t, O))), lt: (t) => w($(e, ((O) => i((n) => u(n) && n < O))(t))), gt: (t) => w($(e, ((O) => i((n) => u(n) && n > O))(t))), lte: (t) => w($(e, ((O) => i((n) => u(n) && n <= O))(t))), gte: (t) => w($(e, ((O) => i((n) => u(n) && n >= O))(t))), int: () => w($(e, i((t) => u(t) && Number.isInteger(t)))), finite: () => w($(e, i((t) => u(t) && Number.isFinite(t)))), positive: () => w($(e, i((t) => u(t) && t > 0))), negative: () => w($(e, i((t) => u(t) && t < 0))) });
 w(i(u));
-const g = (e) => Object.assign(h(e), { between: (t, O) => g($(e, ((n, a) => i((r) => q(r) && n <= r && a >= r))(t, O))), lt: (t) => g($(e, ((O) => i((n) => q(n) && n < O))(t))), gt: (t) => g($(e, ((O) => i((n) => q(n) && n > O))(t))), lte: (t) => g($(e, ((O) => i((n) => q(n) && n <= O))(t))), gte: (t) => g($(e, ((O) => i((n) => q(n) && n >= O))(t))), positive: () => g($(e, i((t) => q(t) && t > 0))), negative: () => g($(e, i((t) => q(t) && t < 0))) });
+const g = (e) => Object.assign(b(e), { between: (t, O) => g($(e, ((n, a) => i((r) => q(r) && n <= r && a >= r))(t, O))), lt: (t) => g($(e, ((O) => i((n) => q(n) && n < O))(t))), gt: (t) => g($(e, ((O) => i((n) => q(n) && n > O))(t))), lte: (t) => g($(e, ((O) => i((n) => q(n) && n <= O))(t))), gte: (t) => g($(e, ((O) => i((n) => q(n) && n >= O))(t))), positive: () => g($(e, i((t) => q(t) && t > 0))), negative: () => g($(e, i((t) => q(t) && t < 0))) });
 g(i(q));
-h(i(function(e) {
+b(i(function(e) {
   return typeof e == "boolean";
 }));
-h(i(function(e) {
+b(i(function(e) {
   return typeof e == "symbol";
 }));
-h(i(function(e) {
+b(i(function(e) {
   return e == null;
 }));
-h(i(function(e) {
+b(i(function(e) {
   return e != null;
 }));
 class Et extends Error {
@@ -363,8 +363,8 @@ class C {
     let a;
     t.length === 3 && typeof t[1] == "function" ? a = t[1] : t.length > 2 && n.push(...t.slice(1, t.length - 1));
     let r = !1, o = {};
-    const s = (p, b) => {
-      r = !0, o[p] = b;
+    const s = (p, h) => {
+      r = !0, o[p] = h;
     }, c = !n.some((p) => f(p, this.input, s)) || a && !a(this.input) ? H : { matched: !0, value: O(r ? X in o ? o[X] : o : this.input, this.input) };
     return new C(this.input, c);
   }
@@ -418,7 +418,7 @@ const _t = /* @__PURE__ */ new Set([
   8239,
   8287,
   12288
-]), Be = 40, j = 41, Ee = 91, N = 93, Ye = 123, R = 125, Ut = 44, Xt = 58, Ct = 35, jt = 64, W = 47, Nt = 62, Rt = 45, ce = 34, $e = 39, Zt = 92, It = 10, be = 42, he = 96, _e = /* @__PURE__ */ new Set([Xt, Ct, jt, W]), Mt = new T((e) => {
+]), Be = 40, j = 41, Ee = 91, N = 93, Ye = 123, R = 125, Ut = 44, Xt = 58, Ct = 35, jt = 64, W = 47, Nt = 62, Rt = 45, ce = 34, $e = 39, Zt = 92, It = 10, he = 42, be = 96, _e = /* @__PURE__ */ new Set([Xt, Ct, jt, W]), Mt = new T((e) => {
   for (let t = 0, O = 0; ; O++) {
     if (e.next < 0) {
       O && e.acceptToken(oe);
@@ -436,11 +436,11 @@ const _t = /* @__PURE__ */ new Set([
 });
 function Ue(e) {
   let t = !1, O = null, n = !1;
-  return () => t ? n ? (n = !1, !0) : e.next === Zt ? (n = !0, !0) : ((O === "double" && e.next === ce || O === "single" && e.next === $e || O === "template" && e.next === he) && (t = !1, O = null), !0) : e.next === ce ? (t = !0, O = "double", !0) : e.next === $e ? (t = !0, O = "single", !0) : e.next === he ? (t = !0, O = "template", !0) : !1;
+  return () => t ? n ? (n = !1, !0) : e.next === Zt ? (n = !0, !0) : ((O === "double" && e.next === ce || O === "single" && e.next === $e || O === "template" && e.next === be) && (t = !1, O = null), !0) : e.next === ce ? (t = !0, O = "double", !0) : e.next === $e ? (t = !0, O = "single", !0) : e.next === be ? (t = !0, O = "template", !0) : !1;
 }
 function Xe(e) {
   let t = !1, O = !1;
-  return () => t ? (e.next === It && (t = !1), !0) : O ? (e.next === be && e.peek(1) === W && (O = !1), !0) : e.next === W && e.peek(1) === W ? (t = !0, !0) : e.next === W && e.peek(1) === be ? (O = !0, !0) : !1;
+  return () => t ? (e.next === It && (t = !1), !0) : O ? (e.next === he && e.peek(1) === W && (O = !1), !0) : e.next === W && e.peek(1) === W ? (t = !0, !0) : e.next === W && e.peek(1) === he ? (O = !0, !0) : !1;
 }
 function Kt(e) {
   let t = "";
@@ -615,10 +615,10 @@ const nO = tt.inputHandler.of((e, t, O, n) => {
     if (!c)
       return { range: o };
     p = ue(a.doc, c.parent, s);
-    const b = a.doc.sliceString(s, s + 1);
+    const h = a.doc.sliceString(s, s + 1);
     if (n === ">" && // Ensure there is no closing tag already
-    (c.parent?.lastChild?.name !== "CloseTag" || b !== "<") && p) {
-      const x = b === ">", E = `${x ? "" : ">"}</${p}>`;
+    (c.parent?.lastChild?.name !== "CloseTag" || h !== "<") && p) {
+      const x = h === ">", E = `${x ? "" : ">"}</${p}>`;
       return {
         range: re.cursor(s + 1),
         changes: { from: s + (x ? 1 : 0), insert: E }
@@ -674,7 +674,7 @@ function oO(e) {
   }
   return Ot((a, r) => {
     const o = a.type.id;
-    return o === D || o === G || o === Y ? { parser: rO(t) } : o === ht ? K(a, r, t) : o === ut ? K(a, r, O) : o === wt ? K(a, r, n) : null;
+    return o === D || o === G || o === Y ? { parser: rO(t) } : o === bt ? K(a, r, t) : o === ut ? K(a, r, O) : o === wt ? K(a, r, n) : null;
   });
 }
 const lO = [
@@ -1235,7 +1235,7 @@ If this is falsy, no element is rendered.`
   { snippet: "$inspect.trace();", test: y },
   { snippet: "$inspect.trace(${});", test: y },
   { snippet: "$host()" }
-], bO = [
+], hO = [
   { snippet: "#if ${}}\n	${}\n{/if", label: "#if" },
   { snippet: "#each ${} as ${}}\n	${}\n{/each", label: "#each" },
   { snippet: "#await ${} then ${}}\n	${}\n{/await", label: "#await then" },
@@ -1246,12 +1246,12 @@ If this is falsy, no element is rendered.`
   },
   { snippet: "#key ${}}\n	${}\n{/key", label: "#key" },
   { snippet: "#snippet ${}()}\n	${}\n{/snippet", label: "#snippet" }
-], hO = [
+], bO = [
   { snippet: "@html ${}", label: "@html" },
   { snippet: "@debug ${}", label: "@debug" },
   { snippet: "@const ${}", label: "@const" },
   { snippet: "@render ${}", label: "@render" }
-], uO = [{ snippet: "@attach ${}", label: "@attach" }], wO = bO.map(({ snippet: e, label: t }) => V(e, { label: t, type: "snippet" })), fO = hO.map(({ snippet: e, label: t }) => V(e, { label: t, type: "snippet" })), dO = uO.map(({ snippet: e, label: t }) => V(e, { label: t, type: "snippet" }));
+], uO = [{ snippet: "@attach ${}", label: "@attach" }], wO = hO.map(({ snippet: e, label: t }) => V(e, { label: t, type: "snippet" })), fO = bO.map(({ snippet: e, label: t }) => V(e, { label: t, type: "snippet" })), dO = uO.map(({ snippet: e, label: t }) => V(e, { label: t, type: "snippet" }));
 function A(e, t) {
   return t ? e.state.doc.sliceString(t.from, t.to) : null;
 }
@@ -1261,16 +1261,16 @@ function qe(e, t) {
     to: o
   };
   return Ae(O).with("/", () => {
-    const p = (b) => ({
+    const p = (h) => ({
       ...c,
-      options: [{ label: b, type: s }],
+      options: [{ label: h, type: s }],
       validFor: /^\/\w*$/
     });
     return n?.name === "EachBlockClose" || a?.name === "EachBlock" ? p("/each") : n?.name === "IfBlockClose" || a?.name === "IfBlock" ? p("/if") : n?.name === "AwaitBlockClose" || a?.name === "AwaitBlock" ? p("/await") : n?.name === "KeyBlockClose" || a?.name === "KeyBlock" ? p("/key") : null;
   }).with(":", () => {
-    const p = (b) => ({
+    const p = (h) => ({
       ...c,
-      options: b,
+      options: h,
       validFor: /^:\w*$/
     });
     return n?.name === "ElseBlock" || a?.name === "IfBlock" ? p([
@@ -1573,8 +1573,8 @@ const _O = De.add({
     const t = /^\s*}/.test(e.textAfter);
     return e.lineIndent(e.node.from) + (t ? 0 : e.unit);
   }
-});
-function UO({ jsParser: e, tsParser: t, cssParser: O }) {
+}), UO = /* @__PURE__ */ new Set(["css", "postcss", "pcss", "scss", "less"]);
+function XO({ jsParser: e, tsParser: t, cssParser: O }) {
   return [
     {
       tag: "script",
@@ -1591,16 +1591,16 @@ function UO({ jsParser: e, tsParser: t, cssParser: O }) {
     {
       tag: "style",
       attributeMatcher(n) {
-        return (!n.lang || n.lang === "css" || n.lang === "scss") && (!n.type || /^(text\/)?(x-)?(stylesheet|css|scss)$/i.test(n.type));
+        return (!n.lang || UO.has(n.lang)) && (!n.type || /^(text\/)?(x-)?(stylesheet|css|scss)$/i.test(n.type));
       },
       parser: O ?? He.parser
     }
   ];
 }
-function XO(e) {
+function CO(e) {
   return Ge.define({
     parser: OO.configure({
-      wrap: oO(UO(e)),
+      wrap: oO(XO(e)),
       props: [
         _O,
         Fe.add({
@@ -1629,8 +1629,8 @@ function XO(e) {
     }
   });
 }
-function FO(e = {}) {
-  const t = XO(e);
+function JO(e = {}) {
+  const t = CO(e);
   return new Je(t, [
     et().support,
     L.data.of({
@@ -1644,7 +1644,7 @@ function FO(e = {}) {
   ]);
 }
 export {
-  FO as svelte,
-  XO as svelteLanguage,
+  JO as svelte,
+  CO as svelteLanguage,
   OO as svelteParser
 };

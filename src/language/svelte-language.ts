@@ -15,6 +15,12 @@ export interface Config {
   cssParser?: LRParser;
 }
 
+// Dialects close enough to CSS that lang-css highlights them usefully: PostCSS
+// (Tailwind's `@apply`, `@reference`) is CSS syntax with extra at-rules, and SCSS
+// and Less are brace-based supersets whose extensions degrade to local parse
+// errors. Indented `sass` is not brace-based, so lang-css cannot parse it.
+const cssDialectLangs = new Set(["css", "postcss", "pcss", "scss", "less"]);
+
 function getNestingConfig({ jsParser, tsParser, cssParser }: Config): NestedLanguageConfig[] {
   return [
     {
@@ -36,7 +42,7 @@ function getNestingConfig({ jsParser, tsParser, cssParser }: Config): NestedLang
       tag: "style",
       attributeMatcher(attrs) {
         return (
-          (!attrs.lang || attrs.lang === "css" || attrs.lang === "scss") &&
+          (!attrs.lang || cssDialectLangs.has(attrs.lang)) &&
           (!attrs.type || /^(text\/)?(x-)?(stylesheet|css|scss)$/i.test(attrs.type))
         );
       },
