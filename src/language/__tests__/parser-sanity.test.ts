@@ -124,18 +124,22 @@ describe("bracket-tracking in expression tokenizer", () => {
     expect(span).toEqual([0, src.length]);
   });
 
-  it("does not terminate on } inside a string", () => {
-    const src = '{fn("}")}';
+  it("tracks curly braces of an object literal outside any parens", () => {
+    const src = "{x ? {a: 1} : 2}";
     expect(hasNoErrors(src)).toBe(true);
-    const span = findNodeSpan(src, "Interpolation");
-    expect(span).toEqual([0, src.length]);
+    expect(findNodeSpan(src, "Interpolation")).toEqual([0, src.length]);
   });
 
-  it("does not terminate on } inside a single-quoted string", () => {
-    const src = "{fn('}')}";
+  it.each([
+    ["a double-quoted string", '{fn("}")}'],
+    ["a single-quoted string", "{fn('}')}"],
+    ["a template literal", "{fn(`}`)}"],
+    ["a string with an escaped quote", '{fn("\\"}")}'],
+    ["a block comment", "{1 /* } */}"],
+    ["a line comment", "{1 // }\n}"],
+  ])("does not terminate on } inside %s", (_label, src) => {
     expect(hasNoErrors(src)).toBe(true);
-    const span = findNodeSpan(src, "Interpolation");
-    expect(span).toEqual([0, src.length]);
+    expect(findNodeSpan(src, "Interpolation")).toEqual([0, src.length]);
   });
 });
 
@@ -163,8 +167,10 @@ describe("HTML element parsing", () => {
   });
 
   it("parses self-closing void elements", () => {
-    expect(nodeNames('<input type="text" />').has("Element")).toBe(true);
-    expect(nodeNames("<br />").has("Element")).toBe(true);
+    for (const src of ['<input type="text" />', "<br />"]) {
+      expect(nodeNames(src).has("Element")).toBe(true);
+      expect(hasNoErrors(src)).toBe(true);
+    }
   });
 });
 
@@ -188,11 +194,10 @@ describe("directive parsing", () => {
 // -------------------------------------------------------------------
 
 describe("script and style tag parsing", () => {
-  it("parses <script> producing ScriptText", () => {
-    expect(nodeNames("<script>let x = 1;</script>").has("ScriptText")).toBe(true);
-  });
-
-  it("parses <style> producing StyleText", () => {
-    expect(nodeNames("<style>div { color: red; }</style>").has("StyleText")).toBe(true);
+  it("parses <script> and <style> bodies as ScriptText and StyleText", () => {
+    const script = nodeNames("<script>let x = 1;</script>");
+    const style = nodeNames("<style>div { color: red; }</style>");
+    expect(script.has("ScriptText")).toBe(true);
+    expect(style.has("StyleText")).toBe(true);
   });
 });
